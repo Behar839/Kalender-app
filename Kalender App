@@ -1,18 +1,18 @@
+main.dart
+cd /path/to/kalender_app
+git init
+git add .
+git commit -m "Initial commit med kalender-app"
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-void main() {
-  runApp(MyApp());
-}
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Kalender App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
       home: CalendarPage(),
     );
   }
@@ -24,76 +24,28 @@ class CalendarPage extends StatefulWidget {
 }
 
 class _CalendarPageState extends State<CalendarPage> {
-  late Map<DateTime, List<String>> _events;
-  late List<String> _selectedEvents;
   late DateTime _selectedDay;
 
   @override
   void initState() {
     super.initState();
-    _events = {};
     _selectedDay = DateTime.now();
-    _selectedEvents = _getEventsForDay(_selectedDay);
-  }
-
-  // Funksjon for å få hendelser for en gitt dag
-  List<String> _getEventsForDay(DateTime day) {
-    return _events[day] ?? [];
-  }
-
-  // Funksjon for å legge til en hendelse
-  void _addEvent(DateTime day, String event) {
-    setState(() {
-      if (_events[day] == null) {
-        _events[day] = [];
-      }
-      _events[day]!.add(event);
-      _selectedEvents = _getEventsForDay(_selectedDay);
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Kalender App"),
-      ),
-      body: Column(
-        children: [
-          // Kalender-widgeten
-          TableCalendar(
-            focusedDay: _selectedDay,
-            firstDay: DateTime.utc(2020, 1, 1),
-            lastDay: DateTime.utc(2030, 12, 31),
-            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-            onDaySelected: (selectedDay, focusedDay) {
-              setState(() {
-                _selectedDay = selectedDay;
-                _selectedEvents = _getEventsForDay(selectedDay);
-              });
-            },
-            eventLoader: _getEventsForDay,
-          ),
-          // Liste over hendelser for den valgte dagen
-          Expanded(
-            child: ListView(
-              children: _selectedEvents
-                  .map((event) => ListTile(title: Text(event)))
-                  .toList(),
-            ),
-          ),
-          // Legg til hendelse knapp
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              onPressed: () {
-                // Legg til en hendelse
-                _addEvent(_selectedDay, "Ny hendelse");
-              },
-              child: Text("Legg til hendelse"),
-            ),
-          ),
-        ],
+      appBar: AppBar(title: Text('Kalender App')),
+      body: TableCalendar(
+        firstDay: DateTime.utc(2020, 1, 1),
+        lastDay: DateTime.utc(2030, 12, 31),
+        focusedDay: _selectedDay,
+        selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+        onDaySelected: (selectedDay, focusedDay) {
+          setState(() {
+            _selectedDay = selectedDay;
+          });
+        },
       ),
     );
   }
